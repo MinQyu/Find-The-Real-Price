@@ -1,5 +1,5 @@
-import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import cheerio from "cheerio";
 
 export interface IFetchResult {
   id: number;
@@ -9,7 +9,6 @@ export interface IFetchResult {
 }
 
 const fetchDanawaResults = async (query: string): Promise<IFetchResult[]> => {
-  const cheerio = require("cheerio");
   const INFO_SELECTOR = ".product_list .prod_main_info";
   const IMG_SRC_SELECTOR = ".thumb_image img";
   const PROD_NAME_SELECTOR = ".prod_info .prod_name a";
@@ -18,7 +17,8 @@ const fetchDanawaResults = async (query: string): Promise<IFetchResult[]> => {
     const url = `https://search.danawa.com/dsearch.php?module=goods&act=dispMain&k1=${encodeURIComponent(
       query
     )}`;
-    const { data } = await axios.get(url);
+    const response = await fetch(url);
+    const data = await response.text();
     const $ = cheerio.load(data);
     const results: IFetchResult[] = [];
     $(INFO_SELECTOR).each((_, element) => {
@@ -26,11 +26,9 @@ const fetchDanawaResults = async (query: string): Promise<IFetchResult[]> => {
       const imgSrc = imgElement.attr("data-src") || imgElement.attr("src");
       // 레이지 로드 문제 해결
       const title = $(element).find(PROD_NAME_SELECTOR).text().trim();
-      const idString = $(element)
-        .find(PROD_NAME_SELECTOR)
-        .attr("href")
-        .match(/pcode=(\d+)&/);
-      const id = parseInt(idString[1]);
+      const link = $(element).find(PROD_NAME_SELECTOR).attr("href");
+      const idString = link ? link.match(/pcode=(\d+)&/) : null;
+      const id = idString ? parseInt(idString[1]) : 0;
       const specList = $(element).find(SPEC_LIST_SELECTOR);
       let specSet = "";
       $(specList)
@@ -57,7 +55,7 @@ const fetchDanawaResults = async (query: string): Promise<IFetchResult[]> => {
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q");
+  const q = searchParams.get("q") || "";
   const results = await fetchDanawaResults(q);
   return new NextResponse(JSON.stringify(results), {
     status: 200,

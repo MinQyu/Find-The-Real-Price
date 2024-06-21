@@ -1,30 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./loading";
 import SearchResult from "../components/home_search_result";
 import { IFetchResult } from "../api/search/route";
 
 export const fetchData = async (query: string) => {
-  const { data } = await axios.get(
-    `/api/search?q=${encodeURIComponent(query)}`
-  );
+  const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+  const data = await response.json();
   return data;
 };
 
 export default function Home() {
   const [query, setQuery] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const {
     data,
     isLoading,
     isError,
   }: { data?: IFetchResult[]; isLoading: any; isError: any } = useQuery({
+    enabled: searchQuery.length >= 1,
     queryKey: ["crawlerData", searchQuery],
     queryFn: () => fetchData(searchQuery),
-    enabled: !!searchQuery,
   });
 
   const handleSearch = () => {
