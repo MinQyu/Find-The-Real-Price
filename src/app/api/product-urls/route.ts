@@ -61,7 +61,6 @@ const fetchProductUrl = async (id: number): Promise<IMarketUrls> => {
         const match = href.match(/link_pcode=([^&]*)/);
         marketUrls.gmarket = `https://item.gmarket.co.kr/Item?goodscode=${match[1]}`;
       } else if (alt === "옥션" && href) {
-        console.log(href);
         const match = href.match(/link_pcode=([^&]*)/);
         marketUrls.auction = `https://itempage3.auction.co.kr/DetailView.aspx?itemno=${match[1]}`;
       }
