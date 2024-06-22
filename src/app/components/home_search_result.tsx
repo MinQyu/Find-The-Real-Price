@@ -2,7 +2,7 @@ import { IFetchResult } from "../api/search/route";
 import styles from "@/app/styles/home_search_result.module.css";
 import DOMPurify from "dompurify";
 import { useState } from "react";
-import Price from "./price";
+import Product from "./product";
 
 export interface ISearchResultProps extends IFetchResult {}
 
@@ -24,7 +24,7 @@ export default function SearchResult({
         <h2>{title}</h2>
         <div dangerouslySetInnerHTML={{ __html: sanitizedText }} />
       </div>
-      {showPrice && <Price id={id} />}
+      {showPrice && <Product id={id} />}
     </div>
   );
 }

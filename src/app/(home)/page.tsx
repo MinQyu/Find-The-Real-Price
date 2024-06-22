@@ -6,7 +6,7 @@ import Loading from "./loading";
 import SearchResult from "../components/home_search_result";
 import { IFetchResult } from "../api/search/route";
 
-export const fetchData = async (query: string) => {
+export const fetchData = async (query: string): Promise<IFetchResult[]> => {
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
   const data = await response.json();
   return data;
@@ -20,9 +20,9 @@ export default function Home() {
     isLoading,
     isError,
   }: { data?: IFetchResult[]; isLoading: any; isError: any } = useQuery({
-    enabled: searchQuery.length >= 1,
     queryKey: ["crawlerData", searchQuery],
     queryFn: () => fetchData(searchQuery),
+    enabled: searchQuery.length > 0,
   });
 
   const handleSearch = () => {

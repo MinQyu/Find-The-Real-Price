@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import cheerio from "cheerio";
+
+const cheerio = require("cheerio");
 
 export interface IFetchResult {
   id: number;
