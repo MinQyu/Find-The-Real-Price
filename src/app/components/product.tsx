@@ -1,54 +1,30 @@
-import { useQuery } from "@tanstack/react-query";
-import { IMarketUrls } from "../api/product-urls/route";
+import { IFetchResult } from "../api/search/route";
+import styles from "@/app/styles/product.module.css";
+import DOMPurify from "dompurify";
+import { useState } from "react";
+import ProductDetail from "./product-detail";
 
-export const fetchData = async (id: number): Promise<IMarketUrls> => {
-  const response = await fetch(
-    `/api/product-urls?id=${encodeURIComponent(id)}`
-  );
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  const data = await response.json();
-  return data;
-};
+export interface ISearchResultProps extends IFetchResult {}
 
-export default function Product({ id }: { id: number }) {
-  const {
-    data,
-    isLoading,
-    isError,
-  }: { data?: IMarketUrls; isLoading: any; isError: any } = useQuery({
-    queryKey: ["UrlData", id],
-    queryFn: () => fetchData(id),
-    enabled: !!id,
-  });
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error fetching data</div>;
-  }
-
+export default function SearchResult({
+  id,
+  imgSrc,
+  title,
+  specSet,
+}: ISearchResultProps) {
+  const [showPrice, setShowPrice] = useState(false);
+  const handleItemClick = () => {
+    setShowPrice(true);
+  };
+  const sanitizedText = DOMPurify.sanitize(specSet);
   return (
-    <div>
-      <p>ID: {id}</p>
-      {data && (
-        <div>
-          <a href={data.coupang} target="_blank" rel="noopener noreferrer">
-            쿠팡 링크
-          </a>
-          <a href={data.eleven} target="_blank" rel="noopener noreferrer">
-            11번가 링크
-          </a>
-          <a href={data.gmarket} target="_blank" rel="noopener noreferrer">
-            G마켓 링크
-          </a>
-          <a href={data.auction} target="_blank" rel="noopener noreferrer">
-            옥션 링크
-          </a>
-        </div>
-      )}
+    <div key={id} className={styles.result_item} onClick={handleItemClick}>
+      <img src={imgSrc} />
+      <div className={styles.result_item__info_box}>
+        <h2>{title}</h2>
+        <div dangerouslySetInnerHTML={{ __html: sanitizedText }} />
+      </div>
+      {showPrice && <ProductDetail id={id} />}
     </div>
   );
 }

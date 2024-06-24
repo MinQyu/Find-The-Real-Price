@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "./loading";
-import SearchResult from "../components/home_search_result";
+import Product from "../components/product";
 import { IFetchResult } from "../api/search/route";
 
 export const fetchData = async (query: string): Promise<IFetchResult[]> => {
@@ -28,6 +28,13 @@ export default function Home() {
   const handleSearch = () => {
     setSearchQuery(query);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <div>
       <h1>다나와 검색</h1>
@@ -35,6 +42,7 @@ export default function Home() {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="검색어를 입력하세요"
       />
       <button onClick={handleSearch}>검색</button>
@@ -43,7 +51,7 @@ export default function Home() {
       {data && (
         <div>
           {data.map((item) => (
-            <SearchResult
+            <Product
               id={item.id}
               key={item.id}
               imgSrc={item.imgSrc}
