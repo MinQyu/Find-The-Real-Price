@@ -31,24 +31,31 @@ export default function Product({ id }: { id: number }) {
   }
 
   return (
-    <div>
-      <p>ID: {id}</p>
+    <>
       {data && (
         <div>
-          <a href={data.coupang} target="_blank" rel="noopener noreferrer">
-            쿠팡 링크
-          </a>
-          <a href={data.eleven} target="_blank" rel="noopener noreferrer">
-            11번가 링크
-          </a>
-          <a href={data.gmarket} target="_blank" rel="noopener noreferrer">
-            G마켓 링크
-          </a>
-          <a href={data.auction} target="_blank" rel="noopener noreferrer">
-            옥션 링크
-          </a>
+          <div>
+            <a href={data.coupang} target="_blank" rel="noopener noreferrer">
+              쿠팡 링크
+            </a>
+          </div>
+          <div>
+            <a href={data.eleven} target="_blank" rel="noopener noreferrer">
+              11번가 링크
+            </a>
+          </div>
+          <div>
+            <a href={data.gmarket} target="_blank" rel="noopener noreferrer">
+              G마켓 링크
+            </a>
+          </div>
+          <div>
+            <a href={data.auction} target="_blank" rel="noopener noreferrer">
+              옥션 링크
+            </a>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
