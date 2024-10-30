@@ -6,7 +6,7 @@ import ProductDetail from "./product-detail";
 
 export interface ISearchResultProps extends IFetchResult {}
 
-export default function SearchResult({
+export default function Product({
   id,
   imgSrc,
   title,
